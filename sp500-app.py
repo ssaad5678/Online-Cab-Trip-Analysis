@@ -186,12 +186,15 @@ plt.title('cab rides stop location frequency')
 plt.xticks(rotation=45)
 st.pyplot(fig)
 st.markdown('<div id="conclusion">Conclusions</div>', unsafe_allow_html=True)
-text = '<div id="conclusion1">1. Business cabs were not only used more in volume but also have traveled more distance.<br>' \
-       '2. Round trips were more in December.<br>' \
-       '3. December can prove to be the best month for earning profit by raising fare as demand is more.<br>' \
-       '4. Seasonal pattern is there.<br>' \
-       '5. Cab traffic was high in just 5 cities comparatively.<br>' \
-       '6. Most of the cab rides are within a distance of 35 miles taking about 30 minutes.<br>' \
-       '7. For Airport cabs are taking more time than usual.</div>'
+# Create a Pandas DataFrame with the text
+data = {'Data Analysis': ['Business cabs were not only used more in volume but also have traveled more distance.',
+                'Round trips were more in December.',
+                'December can prove to be the best month for earning profit by raising fare as demand is more.',
+                'Seasonal pattern is there.',
+                'Cab traffic was high in just 5 cities comparatively.',
+                'Most of the cab rides are within a distance of 35 miles taking about 30 minutes.',
+                'For Airport cabs are taking more time than usual.']}
+df = pd.DataFrame(data)
 
-st.markdown(text, unsafe_allow_html=True)
+# Display the DataFrame as a table
+st.table(df)
