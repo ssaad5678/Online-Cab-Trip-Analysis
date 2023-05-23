@@ -10,20 +10,14 @@ from PIL import Image
 image=Image.open('Poster For Mini Project.jpg')
 st.image(image,use_column_width=True)
 # Define some CSS styles
-css = """
-h1 {
-    color: #FFD700;
-    text-align: center;
-}
-p {
-    font-size: 20px;
-}
-"""
+def load_css():
+    with open("designing.css") as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Display the styles
-st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+# Call the load_css function
+load_css()
 # Display some content
-st.write('# Online Cab Trip Analysis')
+st.markdown('<div id="sentence1">Online Cab Trip Analysis</div>', unsafe_allow_html=True)
 
 # Reading data
 df = pd.read_csv("Uber Trip.csv", encoding='latin1')
@@ -35,16 +29,17 @@ st.write(df)
 
 
 # Missing Data
-st.write('# Missing Data')
+st.markdown('<div id="sentence2">Missing Data</div>', unsafe_allow_html=True)
 st.write('Heatmap of missing data')
 fig=plt.figure(figsize=(15,10))
 sns.heatmap(df.isnull(), cmap='magma', yticklabels=False)
 st.pyplot(fig)
 
-st.write('# Bar chart of missing data')
+st.markdown('<div id="sentence3">Barchart of Missing Data</div>', unsafe_allow_html=True)
 fig,ax=plt.subplots()
 msno.bar(df,ax=ax)
 st.pyplot(fig)
+
 
 # Handling missing data
 df.drop(index=1155, axis=0, inplace=True)
@@ -55,7 +50,7 @@ df['START_DATE'] = pd.to_datetime(df['START_DATE'], errors='coerce')
 df['END_DATE'] = pd.to_datetime(df['END_DATE'], errors='coerce')
 
 # Categorical data
-st.write('# Categorical Data')
+st.markdown('<div id="sentence4">Categorical Data</div>', unsafe_allow_html=True)
 category = pd.crosstab(index=df['CATEGORY'], columns='count of travel as per category')
 st.write(category)
 fig, ax=plt.subplots()
@@ -63,31 +58,31 @@ category.plot(kind='bar', color='r',ax=ax)
 plt.legend()
 st.pyplot(fig)
 
-st.write('# Start points with more than 10 trips')
+st.markdown('<div id="sentence5">Start Points with More Than 10 Trips</div>', unsafe_allow_html=True)
 start_point = df.START.value_counts()
 st.write(start_point[start_point>10])
 fig, ax=plt.subplots()
 start_point[start_point>10].plot(kind='pie', shadow=True,ax=ax)
 st.pyplot(fig)
 
-st.write('# Start points with 10 or fewer trips')
+st.markdown('<div id="sentence6">Start Points with 10 or Fewer Trips</div>', unsafe_allow_html=True)
 st.write(start_point[start_point<=10])
 
-st.write('# Stop points with more than 10 trips')
+st.markdown('<div id="sentence7">Stop Points with more than 10 trips</div>', unsafe_allow_html=True)
 stop_point = df.STOP.value_counts()
 st.write(stop_point[stop_point>10])
 
-st.write('# Stop points with 10 or fewer trips')
+st.markdown('<div id="sentence8">Stop Points with 10 or Fewer Trips</div>', unsafe_allow_html=True)
 st.write(stop_point[stop_point<=10])
 
-st.write('# Miles with more than 10 trips')
+st.markdown('<div id="sentence9">Miles With More Than 10 Trips</div>', unsafe_allow_html=True)
 miles = df.MILES.value_counts()
 st.write(miles[miles>10])
 fig,ax=plt.subplots()
 miles[miles>10].plot(kind='bar',ax=ax)
 st.pyplot(fig)
 
-st.write('# Miles with 10 or fewer trips')
+st.markdown('<div id="sentence10">Miles with 10 or fewer trips</div>', unsafe_allow_html=True)
 st.write(miles[miles<=10])
 data = {'MILES': [840, 31],
         'Round_TRIP': [False, True]}
@@ -101,7 +96,7 @@ fig, ax=plt.subplots()
 miles.plot(kind='bar', color='r',ax=ax)
 st.pyplot(fig)
 
-st.write('# Trips per Purpose')
+st.markdown('<div id="sentence11">Trips Per Purpose</div>', unsafe_allow_html=True)
 st.write(df.PURPOSE.value_counts())
 
 # Number of Trips per Purpose
@@ -117,7 +112,7 @@ st.pyplot(fig)
 df['minutes'] = df.END_DATE - df.START_DATE
 df['minutes'] = df['minutes'].dt.total_seconds()/60
 
-st.write('# Trip Duration')
+st.markdown('<div id="sentence12">Trip Duration</div>', unsafe_allow_html=True)
 st.write(pd.DataFrame({'Mean': df.groupby(['PURPOSE'])['MILES'].mean().round(1),
                        'Min': df.groupby(['PURPOSE'])['MILES'].min(),
                        'Max': df.groupby(['PURPOSE'])['MILES'].max()}
@@ -178,7 +173,7 @@ sns.countplot(data=df,x='PURPOSE',hue='CATEGORY',dodge=False,ax=ax)
 plt.xticks(rotation=45)
 st.pyplot(fig)
 #Display the bar plots of start and stop locations
-st.write('# Bar Plots of Start and Stop Locations')
+st.markdown('<div id="sentence13">Bar Plots of Start and Stop Locations</div>', unsafe_allow_html=True)
 fig,ax=plt.subplots(figsize=(15,4))
 pd.Series(df['START']).value_counts()[:25].plot(kind='bar')
 plt.title('Car rides start location frequency')
@@ -190,11 +185,13 @@ pd.Series(df['STOP']).value_counts()[:25].plot(kind='bar')
 plt.title('cab rides stop location frequency')
 plt.xticks(rotation=45)
 st.pyplot(fig)
-st.subheader('Conclusions')
-st.write("1.Business cabs were not only used more in volumne but also have travelled more distance.")
-st.write("2.Round trips were more in decemnber")
-st.write("3.December can prove to be the best month for earning profit by raising fare as demand is more")
-st.write("4.Seasonal pattern is there")
-st.write("5.Cab traffic was high in just 5 cities comparitevely")
-("6.Most of the cab rides are within a distance of 35 miles taking about 30 minutes")
-("7.For Airport cabs are taking more time than usual.")
+st.markdown('<div id="conclusion">Conclusions</div>', unsafe_allow_html=True)
+text = '<div id="conclusion1">1. Business cabs were not only used more in volume but also have traveled more distance.<br>' \
+       '2. Round trips were more in December.<br>' \
+       '3. December can prove to be the best month for earning profit by raising fare as demand is more.<br>' \
+       '4. Seasonal pattern is there.<br>' \
+       '5. Cab traffic was high in just 5 cities comparatively.<br>' \
+       '6. Most of the cab rides are within a distance of 35 miles taking about 30 minutes.<br>' \
+       '7. For Airport cabs are taking more time than usual.</div>'
+
+st.markdown(text, unsafe_allow_html=True)
