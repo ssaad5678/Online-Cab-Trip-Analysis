@@ -198,3 +198,5 @@ df = pd.DataFrame(data)
 
 # Display the DataFrame as a table
 st.table(df)
+image=Image.open('Front.png')
+st.image(image,use_column_width=True)
