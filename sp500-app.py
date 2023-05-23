@@ -7,7 +7,7 @@ import missingno as msno
 from PIL import Image
 
 
-image=Image.open('ok.jpeg')
+image=Image.open('Poster For Mini Project.jpg')
 st.image(image,use_column_width=True)
 # Define some CSS styles
 css = """
