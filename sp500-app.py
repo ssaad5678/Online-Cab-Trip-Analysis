@@ -180,7 +180,7 @@ st.pyplot(fig)
 #Display the bar plots of start and stop locations
 st.write('# Bar Plots of Start and Stop Locations')
 fig,ax=plt.subplots(figsize=(15,4))
-pd.Series(df['START']).value_counts()[:25].plot(kind='bar',ax=axes[0])
+pd.Series(df['START']).value_counts()[:25].plot(kind='bar',ax=ax[0])
 plt.title('Car rides start location frequency')
 plt.xticks(rotation=45)
 st.pyplot(fig)
