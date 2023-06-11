@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'CustomFont';
+    src: url('C:/Users/syed saad/Mini Project/Delight Mother.ttf');
+  }
 #sentence1 {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     color: #FFD700;
@@ -89,19 +93,20 @@
     font-size:25px;
 }
 table {
-    background-color: rgba(237, 175, 69, 0.707);
-    color: rgb(255, 255, 255);
-    width: 100%;
-  }
-  table tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-table td{
-    color:rgba(102, 60, 102, 0.692);
-    font-size:25px;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-}  
-/* styles.css */
+  background-color: #e8f0fe;
+  color: #333333;
+  width: 100%;
+}
+
+table tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+table td {
+  color: #442266;
+  font-size: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
   @media screen and (max-width: 768px) {
     table {
       width: 100%;
@@ -119,4 +124,9 @@ table td{
       width: 60%;
     }
   }
-  
+div.css-1r6slb0.e1tzin5v2 {
+    background-color: #EEEEEE;
+    border: 2px solid #CCCCCC;
+    padding: 5% 5% 5% 10%;
+    border-radius: 5px;
+}
