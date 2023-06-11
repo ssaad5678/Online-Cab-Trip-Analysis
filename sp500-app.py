@@ -1,3 +1,5 @@
+import csv
+import io
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,7 +8,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as msno
 from PIL import Image
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score,silhouette_samples,silhouette_score
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import LabelEncoder
+from sklearn.impute import SimpleImputer
+
 
 image=Image.open('Poster For Mini Project.jpg')
 st.image(image,use_column_width=True)
@@ -32,14 +38,14 @@ if uploaded_file is not None:
 #--------> seperate into pages ----->
 
 # Define the number of pages
-num_pages = 6
+num_pages = 7
 
 # Check if the 'current_page' session state variable exists
 if 'current_page' not in st.session_state:
     st.session_state.current_page = 1
 
 # Create the sidebar navigation buttons
-button_names = ["Introduction", "Dataset", "Missing Values", "Data Analysis", "Conclusions", "Thank You"]
+button_names = ["Introduction", "Dataset", "Missing Values", "Data Analysis", "Kmeans Analysis", "Conclusions","Thank You"]
 
 st.sidebar.header("Page Navigation")
 for page in range(1, num_pages + 1):
@@ -57,6 +63,14 @@ elif st.session_state.current_page == 2:
     st.write(df.head())
     st.write('The Complete Data Set')
     st.write(df)
+
+    styled_df = df.style \
+    .set_properties(**{'border-color': 'red', 'background-color': 'lightyellow'}) \
+    .set_table_styles([{'selector': 'th', 'props': [('border-color', 'blue')]}])
+
+    # Display the styled DataFrame
+    st.dataframe(styled_df)
+
 elif st.session_state.current_page == 3:
     # Page 3 content
     st.write("Page 3")
@@ -235,24 +249,102 @@ elif st.session_state.current_page == 4:
 
 
 elif st.session_state.current_page == 5:
-    # Page 5 content
+    # Page 6 content
     st.write("Page 5")
+    #-------------->Page 5
+    uploaded_file = st.file_uploader("Upload a CSV file", type="csv", key="csv_uploader")
+
+    if uploaded_file is not None:
+        data = []
+        file_wrapper = io.TextIOWrapper(uploaded_file, encoding='utf-8')
+        reader = csv.reader(file_wrapper)
+        header = next(reader)  # Read header row
+        for row in reader:
+            data.append(row)
+
+    # Extract the features for clustering (START, STOP, MILES)
+    features = np.array([[row[3], row[4], row[5]] for row in data])
+
+    # Encode categorical variables
+    label_encoder = LabelEncoder()
+    for i in range(3):
+        features[:, i] = label_encoder.fit_transform(features[:, i])
+
+    # Handle missing values
+    imputer = SimpleImputer(strategy='mean')
+    features = imputer.fit_transform(features)
+
+    # Elbow Method to determine the optimal number of clusters
+    wcss = []
+    max_clusters = 10
+    for k in range(1, max_clusters + 1):
+        kmeans = KMeans(n_clusters=k, random_state=0)
+        kmeans.fit(features)
+        wcss.append(kmeans.inertia_)
+    fig,ax=plt.subplots()
+    # Plotting the WCSS values against the number of clusters
+    ax.plot(range(1, max_clusters + 1), wcss)
+    ax.set_xlabel('Number of Clusters (k)')
+    ax.set_ylabel('WCSS')
+    ax.set_title('Elbow Method')
+    st.pyplot(fig)
+
+    # Silhouette Analysis
+    silhouette_scores = []
+    for k in range(2, max_clusters + 1):
+        kmeans = KMeans(n_clusters=k, random_state=0)
+        cluster_labels = kmeans.fit_predict(features)
+        silhouette_avg = silhouette_score(features, cluster_labels)
+        silhouette_scores.append(silhouette_avg)
+    fig,ax=plt.subplots()
+
+    # Plotting the silhouette scores
+    ax.plot(range(2, max_clusters + 1), silhouette_scores)
+    ax.set_xlabel('Number of Clusters (k)')
+    ax.set_ylabel('Silhouette Score')
+    ax.set_title('Silhouette Analysis')
+    st.pyplot(fig)
+
+    # Perform K-means clustering with the optimal number of clusters
+    optimal_k = 20  # Set the optimal number of clusters based on the analysis
+    kmeans = KMeans(n_clusters=optimal_k, random_state=0)
+    kmeans.fit(features)
+
+    # Get the predicted cluster labels
+    predicted_labels = kmeans.labels_
+
+    # Extract the ground truth labels
+    ground_truth_labels = np.array([int(row[7]) for row in data])
+
+    # Calculate the accuracy
+    accuracy = accuracy_score(ground_truth_labels, predicted_labels)
+
+    # Calculate the confusion matrix
+    cm = confusion_matrix(ground_truth_labels, predicted_labels)
+
+    # Display the accuracy and confusion matrix
+    st.write("Confusion Matrix:")
+    st.write(cm)
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Accuracy", round(accuracy*1000,2))    
+elif st.session_state.current_page == 6:
+    # Page 6 content
+    st.write("Page 6")
     st.markdown('<div id="conclusion">Conclusions</div>', unsafe_allow_html=True)
     # Create a Pandas DataFrame with the text
     data = {'Data Analysis': ['Business cabs were not only used more in volume but also have traveled more distance.',
                 'Round trips were more in December.',
                 'December can prove to be the best month for earning profit by raising fare as demand is more.',
                 'Seasonal pattern is there.',
-                'Cab traffic was high in just 5 cities comparatively.',
+                'Cab traffic was high in just 5 places comparatively.',
                 'Most of the cab rides are within a distance of 35 miles taking about 30 minutes.',
                 'For Airport cabs are taking more time than usual.']}
     df = pd.DataFrame(data)
     # Display the DataFrame as a table
     st.table(df)
-elif st.session_state.current_page == 6:
-    # Page 6 content
+elif st.session_state.current_page == 7:
+    # Page 7 content
     st.write("Page 6")
-    #-------------->Page 6
+    #-------------->Page 7
     image=Image.open('Front.png')
     st.image(image,use_column_width=True)
-
