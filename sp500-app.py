@@ -62,8 +62,7 @@ elif st.session_state.current_page == 2:
     st.write('Simple DataSet')
     st.write(df.head())
     st.write('The Complete Data Set')
-    st.write(df)
-
+    
     styled_df = df.style \
     .set_properties(**{'border-color': 'red', 'background-color': 'lightyellow'}) \
     .set_table_styles([{'selector': 'th', 'props': [('border-color', 'blue')]}])
