@@ -99,8 +99,8 @@ elif st.session_state.current_page == 3:
     df['PURPOSE'].fillna(method='ffill', inplace=True)
 
     # Data cleaning
-    df['START_DATE'] = pd.to_datetime(df['START_DATE'], errors='coerce')
-    df['END_DATE'] = pd.to_datetime(df['END_DATE'], errors='coerce')
+    df['START_DATE*'] = pd.to_datetime(df['START_DATE'], errors='coerce')
+    df['END_DATE*'] = pd.to_datetime(df['END_DATE'], errors='coerce')
 
     # Categorical data
     st.markdown('<div id="sentence4">Categorical Data</div>', unsafe_allow_html=True)
